@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
-import DigitButton from './components/digitbuttons';
-import OperationButton from './components/operationbutton';
+import DigitButton from './components/digitbuttons.jsx';
+import OperationButton from './components/operationbutton.jsx';
 import './App.css';
 
 export const ACTIONS = {
@@ -29,7 +29,7 @@ function reducer(state, {type, payload}) {
       } 
       return {
         ...state,
-        currentOperand: `${currentOperand || ""}${payload.digit}`,
+        currentOperand: `${state.currentOperand || ""}${payload.digit}`,
       }
       case ACTIONS.CHOOSE_OPERATION:
         if (state.currentOperand == null && state.previousOperand == null) {
@@ -52,8 +52,8 @@ function reducer(state, {type, payload}) {
         return {
           ...state,
           previousOperand: evaluate(state),
-          currentOperand: null,
           operation: payload.operation,
+          currentOperand: null,
         }
       case ACTIONS.CLEAR: 
         return {}
@@ -87,8 +87,8 @@ function reducer(state, {type, payload}) {
         ...state,
         overwrite: true,
         previousOperand: null,
-        currentOperand: evaluate(state),
         operation: null,
+        currentOperand: evaluate(state),
       }
   }
 }
@@ -97,23 +97,23 @@ function evaluate ({currentOperand, previousOperand, operation}){
   const prev = parseFloat(previousOperand)
   const current = parseFloat(currentOperand)
   if (isNaN(prev) || isNaN(current)) return ""
-  let compuattion = ""
+  let computation = ""
   switch (operation) {
     case "+":
-      compuattion = prev + current
+      computation = prev + current
       break 
     case "-":
-      compuattion = prev - current
+      computation = prev - current
       break
     case "/":
-      compuattion = prev / current
+      computation = prev / current
       break
     case "*":
-      compuattion = prev * current
+      computation = prev * current
       break
   }
 
-  return compuattion.toString()
+  return computation.toString()
 }
 
 const INTEGER_FORMATTER = new Intl.NumberFormat("en-us", {
@@ -128,13 +128,13 @@ function formatOperand(operand) {
 }
 
 function App() {
-  const [{currentoperand, previousoperand, operation}, dispatch] = useReducer(reducer, {})
+  const [{currentOperand, previousOperand, operation}, dispatch] = useReducer(reducer, {})
 
   return (
     <div className="calculator-grid">
       <div className='output'>
-        <div className='previous-operand'>{formatOperand(previousoperand)} {operation}</div>
-        <div className='current-operand'>{formatOperand(currentoperand)}</div>
+        <div className='previous-operand'>{formatOperand(previousOperand)} {operation}</div>
+        <div className='current-operand'>{formatOperand(currentOperand)}</div>
       </div>
       <button className='span-two' onClick={() => dispatch({type: ACTIONS.CLEAR})}>
           AC
