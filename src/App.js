@@ -25,7 +25,7 @@ function reducer(state, {type, payload}) {
         currentOperand: `${currentOperand || ""}${payload.digit}`,
       }
       case ACTIONS.CHOOSE_OPERATION:
-        if (state.currentOperand == null && state.previousoperand == null) {
+        if (state.currentOperand == null && state.previousOperand == null) {
           return state
         }
         if (state.previousOperand == null){
@@ -36,9 +36,38 @@ function reducer(state, {type, payload}) {
             currentOperand: null,
           }
         }
+        return {
+          ...state,
+          previousOperand: evaluate(state),
+          currentOperand: null,
+          operation: payload.operation,
+        }
       case ACTIONS.CLEAR: 
       return {}
   }
+}
+
+function evaluate ({currentOperand, previousOperand, operation}){
+  const prev = parseFloat(previousOperand)
+  const current = parseFloat(currentOperand)
+  if (isNaN(prev) || isNaN(current)) return ""
+  let compuattion = ""
+  switch (operation) {
+    case "+":
+      compuattion = prev + current
+      break
+    case "-":
+      compuattion = prev - current
+      break
+    case "/":
+      compuattion = prev / current
+      break
+    case "*":
+      compuattion = prev * current
+      break
+  }
+
+  return compuattion.toString()
 }
 
 function App() {
